@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 movies_scripts.json
 scripts_concat.txt
+dialog_lines.csv
