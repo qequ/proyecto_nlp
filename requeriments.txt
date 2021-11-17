@@ -4,3 +4,4 @@ spacy
 nltk
 sklearn
 gensim
+wordcloud
