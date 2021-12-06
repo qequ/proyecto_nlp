@@ -77,19 +77,27 @@ Posteriormente, tomando las mejores 45 palabras del PMI ordenadas de manera desc
 
 ## Información mutua puntual sobre bigramas
 
-Aplicando la misma fórmula que sobre los unigramas, se creearon bigramas de las distintas líneas de diálogo y se calculó la información mutua puntual sobre ellos. similar a los unigramas, la información mutua puntual no fue mayor a -14.33, pero se pudieron aislar bigramas que hacen referencia a contextos de racismo, por ejemplo: Run nigger, black people, a nigger, entre otros.
+Aplicando la misma fórmula que sobre los unigramas, se crearon bigramas de las distintas líneas de diálogo y se calculó la información mutua puntual sobre ellos. similar a los unigramas, la información mutua puntual no fue mayor a -14.33, pero se pudieron aislar bigramas que hacen referencia a contextos de racismo, por ejemplo: Run nigger, black people, a nigger, entre otros.
 Queda como un trabajo futuro clasificar líneas de texto como racistas o no racistas utilizando estos bigramas sacados de PMI.
+
+
+## Información mutua puntual sobre trigramas
+
+Al igual que en los dos puntos anteriores, se crearon trigramas a partir de las distintas líneas de diálogo, tanto en contextos de diálogo racistas como en contextos no racistas y se aplicó información mutua puntual sobre ellos. Como sucedió con los dos casos anteriores los valores no fueron mayores a -14.39, pero con la particularidad de que no se encontró una cantidad suficiente de trigramas que hagan referencia a contextos de racismo, siendo la mayoría frases que podrían encontrarse en cualquier contexto, por ejemplo: He is a, Have you ever, entre otros. De los pocos trigramas en contextosd racistas que se encontraron han sido; Run nigger run, the black man, nigger run well.
 
 
 # Clasificación de líneas de diálogo racistas
 
-Utilizando las líneas de diálogo clusterizadas se procedió a clasificar de manera binaria como racistas o no racistas de acuerdo a si la intersección de palabras de la lista de semillas racistas expandida y una línea de diálogo dada es no vacía. La clasificación se guardó como un .csv (`dialog_lines.csv`) 
+Utilizando las líneas de diálogo clusterizadas se procedió a clasificar de manera binaria como racistas o no racistas de acuerdo a si la intersección de palabras de la lista de semillas racistas expandida y una línea de diálogo dada es no vacía. La clasificación se guardó como un .csv (`dialog_lines.csv`). Es necesario remarcar que la clasificación es de carácter indicativo y solo tiene en cuenta contextos de racismo explícito (dado que las mayoría de las palabras de la lista semilla de racismo son epítetos racistas), y no tiene en cuenta racismo implícito. e.g. si se tiene una escena donde una persona blanca le dice a una persona negra una línea de diálogo del estilo "no perteneces aquí", sin utilizar peyorativos, entonces esta clasificación la va a pasar por alto.
 
 # Regresión Logística
 
 Finalmente, utilizando la clasificación del punto anterior se entrenó un modelo de regresión logística usando `scikit` partiendo el dataset dado en un conjunto de testeo y otro de entrenamiento, previamente realizando preprocesamiento al texto removiendo puntuaciones y stopwords, así como una vectorización mediante `TfIdfVectorizer`.
 
 Dada la gran desproporción en la cantidad de líneas de diálogo no racistas respecto de las racistas (unas 38014 líneas no racistas y unas 1377 racistas), se utilizó una muestra más pequeña de líneas no racistas para equiparar al de líneas racistas quedando un dataset de 2754 líneas de diálogo para entrenar y testear el modelo.
+
+# Bootstrapping
+Luego de aplicar la Regresión Logística con el conjunto de líneas de texto clasificadas se procedió a aplicar resampling de las muestras de las muestras de entrenamiento unas 1000 veces y luego se analizó su precisión y se confeccionó una matriz de Confusión. 
 
 # Resultados
 
@@ -98,6 +106,10 @@ La regresión logística dio una precisión (accuracy) de 0.87, con la siguiente
 
 ![conf_matrix](images/conf_matrix.png)
 
+El Bootstrapping de la Regresión Logística dio una precisión (accuracy) de 0.5, con la siguiente matriz de confusión
+
+
+![conf_matrix_bootstrap](images/conf_matrix_boots.png)
 
 
 
@@ -110,3 +122,21 @@ Dentro de los trabajos futuros podría plantearse la expansión del dataset dado
 
 
 Otro punto a desarrollar en un trabajo futuro es la expansión de guiones por fuera de Hollywood, los cuales tienden a centrarse en temas de racismo entre blancos y negros sin ahondar tanto en racismo sobre otras culturas, así como el trabajar con racismo implícito, que no necesariamente hace uso de palabras de una lista de semillas de racismo.
+
+
+# Fuentes y referencias
+
+<https://towardsdatascience.com/clustering-documents-with-python-97314ad6a78d>
+
+<https://towardsdatascience.com/spam-detection-with-logistic-regression-23e3709e522>
+
+<https://github.com/SharmaNatasha/Machine-Learning-using-Python>
+
+<https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html>
+
+<https://www.datacamp.com/community/tutorials/understanding-logistic-regression-python>
+
+<https://towardsdatascience.com/logistic-regression-in-classification-model-using-python-machine-learning-dc9573e971d0>
+
+<https://carpentries-incubator.github.io/machine-learning-novice-python/08-bootstrapping/index.html>
+
